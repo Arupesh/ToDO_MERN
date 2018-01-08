@@ -1,59 +1,66 @@
 import React, { Component } from 'react';
 import {Button, form,  FormGroup, FormControl, Grid, Col, Row, ControlLabel, HelpBlock} from 'react-bootstrap';
 import Axios from 'axios';
+import {connect} from 'react-redux';
+import {postTodoItem} from '../actions/data-service-actions';
 
 class Dashboard extends Component {
 
-		constructor(...args) {
-		super(...args);
+		constructor(props) {
+		super(props);
 
 		this.state = {
-			value: '',
-			todoList : []
+			name: '',
+			todo : ''
 		};
 	}
 
 	getValidationState() {
-		const length = this.state.value.length;
+		const length = this.state.todo.length;
 		if (length > 10) return 'success';
 		else if (length > 5) return 'warning';
 		else if (length > 0) return 'error';
 		return null;
 	}
 
-	handleChange(e) {
-		this.setState({ value: e.target.value });
+	onTodoChange(e) {
+		this.setState({ todo: e.target.value });
 	}
 
-	makeApiCall = e => {
-    	e.preventDefault();
-    	const URL = "http://localhost:3001/api/todolist";
-		 // Make HTTP reques with Axios
-		const todoList = Axios.get(URL)
-		      .then((res) => {
-		       console.log("Axios call went thru and returned list >>", res)
-		       this.props.makeTodoApiCall(res);
-		        return res;
-		      });
+	onNameChange(e) {
+		this.setState({ name: e.target.value });
+	}
+
+    onSubmit(e)
+    {
+    	this.props.postTodoItem(this.state);
     }
 
   render() {
     return (
       <div>
       <Grid>
-		<form onSubmit = {this.makeApiCall.bind(this)}>
+		<form onSubmit = {this.onSubmit.bind(this)}>
 				<FormGroup
 					controlId="formBasicText"
 					validationState={this.getValidationState()}
 				>
 					<ControlLabel>Enter the ToDO you want to remember :</ControlLabel>
 					<Row className="show-grid">
-				      <Col xs={12} md={10}>
+				      <Col xs={12} md={3}>
 						<FormControl
 							type="text"
-							value={this.state.value}
-							placeholder="Enter text"
-							onChange={this.handleChange.bind(this)}
+							value={this.state.name}
+							placeholder="Person the todo is related to!!"
+							onChange={this.onNameChange.bind(this)}
+						/>
+					  </Col>
+					   <Col xs={12} md={7}>
+						<FormControl
+							type="text"
+							value={this.state.todo}
+							placeholder="Enter one's todo!!"
+							onChange={this.onTodoChange.bind(this)}
 						/>
 					  </Col>
 					   <Col xs={12} md={2}>
@@ -75,4 +82,4 @@ class Dashboard extends Component {
   }
 }
 
-export default Dashboard;
+export default connect(null, {postTodoItem})(Dashboard);

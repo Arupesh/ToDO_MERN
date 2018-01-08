@@ -4,6 +4,10 @@ import './App.css';
 import {BrowserRouter, Support, Link, Route} from 'react-router-dom';
 import Dashboard from './containers/todo-dashboard';
 import ToDoList from './containers/todo-list';
+import Axios from 'axios';
+import {connect} from 'react-redux';
+
+import {getTodoList} from './actions/data-service-actions';
 
 class App extends Component {
     constructor(props) {
@@ -12,21 +16,33 @@ class App extends Component {
     this.state = {
       todoList : []
     };
-  }
+    }
 
-  updateList({data}) {
-    console.log("Callback with list >>", data)
-    this.setState({todoList: data});
+  componentDidMount(){
+  
+    this.props.getTodoList();
   }
 
   render() {
+    
     return (
       <div className="App">
-        <Dashboard makeTodoApiCall = {this.updateList.bind(this)}/>
-        <ToDoList todoList = {this.state.todoList} />
+        <Dashboard/>
+        <ToDoList todoList = {this.props.todoList} />
       </div>
     );
+    }
   }
-}
 
-export default App;
+
+
+
+  function mapStateToProps(state) {
+    console.log("mapStateToProps >>", state)
+    return {
+      todoList: state.todoList[0]
+    }
+  }
+
+
+export default connect(mapStateToProps, {getTodoList})(App);

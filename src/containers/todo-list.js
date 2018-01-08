@@ -8,11 +8,9 @@ class ToDoList extends Component {
 
 	}
 
-
 	renderList (eachItem) {
-		console.log("EachItem is >>", eachItem)
 		return (
-				<ListGroupItem key= {eachItem._id}>
+				<ListGroupItem key= {eachItem._id} bsStyle="success">
 					<label> {eachItem.name}'s TODO : </label>	{eachItem.todo}
 				</ListGroupItem>
 			)
@@ -22,7 +20,7 @@ class ToDoList extends Component {
     return (
       <div>
       <ListGroup>
-      		{this.props.todoList.map(this.renderList)}
+      		{this.props.todoList ? this.props.todoList.map(this.renderList): "..Loading"}
       </ListGroup>
       </div>
     );
